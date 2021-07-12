@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Trabajo Carro + API</title>
+    <link rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+   
+    <style>
+    .caja{ width:250px; float:left; margin-right:10px !important; }
+    </style>
+</head>
+<body>
+
+    <!-- Cabecera -->
+
+    <header>
+        <div style="padding:20px;">
+            <img src="image/baner.jpeg" width="20%" height="20%" alt="logo"  /> 
+            <h1>CARRITO DE COMPRAS + API</h1>
+        </div>
+    </header>
+
+    <div style="padding:20px;">
+        <div class="ui three item menu">
+            <a class="item" href="javascript:seccion('index.html');">Películas</a><br>
+            <a class="item active" href="javascript:seccion('carro.html');">Carro de Compra</a>
+        </div>
+        <div class="ui segment">
+            <h2>Carro de Compra</h2>
+            <table class="ui celled table">
+            <thead>
+            <tr>
+                <th>Película</th>
+                <th>Año</th>
+                <th>Género</th>
+                <th>Director</th>
+                <th width="1"></th>
+            </tr>
+            </thead>
+            <tbody id="carrito">
+            </tbody>
+            </table>
+        </div>
+
+        <script type='text/javascript'>
+        $(document).ready(function(){
+            var arreglo = $_GET('peliculas'); 
+            if(arreglo != ""){
+                document.getElementById("peliculas").value = arreglo;
+                arr_peliculas = arreglo.split(";"); 
+                var cant_pelis = arr_peliculas.length; 
+                for(i = 1;i < cant_pelis;i++){ 
+                    mostrar_linea(i,arr_peliculas[i]);
+                }
+            }else{
+                $('#carrito').append('<tr><td colspan="20">CARRO VACIO</td></tr>');
+            }
+        }); 
+
+        // Mostrar peliculas del listado
+        function mostrar_linea(lugar,idImdb){
+            const url = 'http://www.omdbapi.com/?i='+idImdb+'&apikey=510a8b73'; 
+
+            fetch(url)
+            .then((resp) => resp.json())
+            .then(function(data) { 
+                $('#carrito').append('<tr><td>' + data.Title + '</td><td>' + data.Year + '</td><td>' + data.Genre + '</td><td>' + data.Director + '</td><td><a href="javascript:quitar(\'' + idImdb + '\');" class="ui button">X</a>');
+            });
+        }
+
+        // Quitar peliculas del listado
+        function quitar(idImdb){
+            var pelis = document.getElementById("peliculas").value;
+            document.getElementById("peliculas").value = pelis.replace(';'+idImdb,'');
+            seccion('carro.html');
+        }
+        function seccion(pagina){
+            location.href=pagina+"?peliculas="+document.getElementById("peliculas").value;
+        }
+
+
+        function $_GET(param) {
+            var vars = {};
+            window.location.href.replace( location.hash, '' ).replace( 
+                /[?&]+([^=&]+)=?([^&]*)?/gi,
+                function( m, key, value ) {
+                    vars[key] = value !== undefined ? value : '';
+                }
+            );
+
+            if ( param ) {
+                return vars[param] ? vars[param] : '';	
+            }
+            return vars;
+        }
+        </script>
+
+        <input type="hidden" id="peliculas">
+    </div>
+</body>
+</html>

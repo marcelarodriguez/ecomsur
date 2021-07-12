@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Trabajo Carro + API</title>
+    <link rel="stylesheet" href="#">	
+    <script src="https://code.jquery.com/jquery-1.11.3.js"></script> 
+    <style>
+    .caja{ width:250px; float:left; margin-right:10px !important; }
+    </style>
+    
+</head>
+
+        <!-- &apikey=510a8b73 -->
+
+<body>
+
+    <!-- Cabecera -->
+
+    <header>
+        <div style="padding:20px;">
+            <img src="image/baner.jpeg" width="20%" height="20%" alt="logo"  /> 
+            <h1>LISTADO DE PELICULAS DESDE UNA API</h1>
+        </div>
+    </header>
+
+    <!-- Cuerpo -->
+       
+    <div class="ui three item menu">
+        <a class="item active" href="javascript:seccion('index.html');">Películas</a><br>
+        <a class="item" href="javascript:seccion('carro.html');">Carro de Compra</a>
+    </div>
+
+    <div class="ui segment caja" id="caja_1"></div>
+    <div class="ui segment caja" id="caja_2"></div>
+    <div class="ui segment caja" id="caja_3"></div>
+    <div class="ui segment caja" id="caja_4"></div>
+    <div class="ui segment caja" id="caja_5"></div>
+    <div class="ui segment caja" id="caja_6"></div>
+    <div class="ui segment caja" id="caja_7"></div>
+    <div class="ui segment caja" id="caja_8"></div>
+    <div class="ui segment caja" id="caja_9"></div>
+    <div class="ui segment caja" id="caja_10"></div>
+
+    <script>
+    muestra_pelicula(1,'tt0000001');
+    muestra_pelicula(2,'tt0000003');
+    muestra_pelicula(3,'tt0000005');
+    muestra_pelicula(4,'tt0000008');
+    muestra_pelicula(5,'tt0000010');
+    muestra_pelicula(6,'tt0000044');
+    muestra_pelicula(7,'tt0000030');
+    muestra_pelicula(8,'tt0000031');
+    muestra_pelicula(9,'tt0000032');
+    muestra_pelicula(10,'tt0000052');
+    
+
+    //muestras las peliculas
+    function muestra_pelicula(lugar,idImdb){
+        const url = 'http://www.omdbapi.com/?i='+idImdb+'&apikey=510a8b73'; 
+
+        fetch(url)
+        .then((resp) => resp.json())
+        .then(function(data) { 
+            $('#caja_'+lugar).append('<h2>' + data.Title + '</h2>'); 
+            $('#caja_'+lugar).append('<img src="' + data.Poster + '" width="100%">'); 
+            $('#caja_'+lugar).append('<br>Año: ' + data.Year); 
+            $('#caja_'+lugar).append('<br>Director: ' + data.Director);
+            $('#caja_'+lugar).append('<br>Genero: ' + data.Genre);  
+            $('#caja_'+lugar).append('<br><a href="javascript:agregar(\'' + idImdb + '\');" class="ui button">Agregar</a>');
+        });
+    }
+
+    // Agrega una pelicula
+    function agregar(idImdb){
+        document.getElementById("peliculas").value = document.getElementById("peliculas").value + ";" + idImdb;
+        alert("Película agregada");
+    }
+
+    // Guarda una pelicula
+    function seccion(pagina){
+        location.href=pagina+"?peliculas="+document.getElementById("peliculas").value;
+    }
+    </script>
+
+    <input type="hidden" id="peliculas">
+    </div>
+</body>
+</html>
